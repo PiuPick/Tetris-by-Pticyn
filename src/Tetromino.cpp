@@ -1,9 +1,6 @@
-#include "../include/Tetromino.h"
-#include "../include/Tetromino.h"
 #include <array>
 #include <cctype>
-#include <cstdlib>
-
+#include "../include/Tetromino.h"
 #include "SFML/Graphics/RectangleShape.hpp"
 
 namespace sf
@@ -127,18 +124,19 @@ void Tetromino::setPosition(int x, int y)
     y_ = y;
 }
 
-void Tetromino::draw(RenderWindow& window, int cellSize, int offsetX, int offsetY) const
+void Tetromino::draw(RenderWindow& window) const
 {
-    RectangleShape block(Vector2f(cellSize - 2, cellSize - 2));
+    RectangleShape block(Vector2f(50, 50));
     block.setFillColor(color_);
-    block.setOutlineThickness(1);
-    block.setOutlineColor(Color::Black);
 
     for (int y = 0; y < 4; ++y)
         for (int x = 0; x < 4; ++x)
             if (shape_[y][x])
             {
-                block.setPosition(Vector2f(offsetX + (x_ + x) * cellSize, offsetY + (y_ + y) * cellSize));
+                block.setPosition(
+                    Vector2f(
+                        (x_ + x) * 50,
+                        (y_ + y) * 50));
                 window.draw(block);
             }
 }

@@ -84,7 +84,7 @@ int main()
 
         // Рисуем все тетромино
         for (const auto& piece : pieces)
-            piece.draw(window, 50, 0, 0); // Размер клетки 50 пикселей
+            piece.draw(window); // Размер клетки 50 пикселей
 
         window.display();
     }
