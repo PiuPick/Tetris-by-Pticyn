@@ -7,4 +7,5 @@ namespace GameConfig
     constexpr unsigned short CELL_SIZE = 50; // Размер клетки в пикселях
     constexpr unsigned short WINDOW_WIDTH = BOARD_WIDTH * CELL_SIZE + 1; // Ширина окна в пикселях
     constexpr unsigned short WINDOW_HEIGHT = BOARD_HEIGHT * CELL_SIZE + 1; // Высота окна в пикселях
+    constexpr unsigned short SPEED_FREE_FALL = 1; // Скорость свободного падения (в секундах)
 }
