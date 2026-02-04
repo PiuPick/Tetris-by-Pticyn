@@ -1,7 +1,6 @@
 #pragma once
-#include "SFML/Graphics/Color.hpp"
 #include <array>
-
+#include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 using namespace sf;
 using namespace std;
@@ -30,5 +29,5 @@ public:
     TetrominoType getTetrominoType() const;
     array<array<bool, 4>, 4> getShape() const;
     void setPosition(int x, int y);
-    void draw(RenderWindow& window, int cellSize, int offsetX, int offsetY) const;
+    void draw(RenderWindow& window) const;
 };
