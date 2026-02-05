@@ -1,5 +1,7 @@
 #pragma once
 #include "Board.h"
+#include "SFML/Graphics/Font.hpp"
+#include "SFML/Graphics/Text.hpp"
 
 enum class GameState
 {
@@ -18,6 +20,10 @@ private:
     int level_;
     float fallSpeed_;
     sf::RenderWindow window_;
+    sf::Font font_;
+    sf::Text scoreText_;
+    sf::Text levelText_;
+    sf::Text stateText_;
     void processEvents();
     void update();
     void render();

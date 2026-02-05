@@ -5,12 +5,23 @@ using namespace GameConfig;
 
 Game::Game() :
     window_(VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Tetris-by-Pticyn"),
+    font_(Font("../res/fonts/consolas.ttf")),
+    scoreText_(font_, "", 15),
+    levelText_(font_, "", 15),
+    stateText_(font_, "", 70),
     state_(GameState::Playing),
     score_(0),
     level_(1),
     fallSpeed_(SPEED_FREE_FALL)
 {
     clock_.start();
+
+    levelText_.setPosition(Vector2f{0, 20});
+
+    stateText_.setFillColor(Color::Red);
+    stateText_.setOutlineColor(Color::White);
+    stateText_.setOutlineThickness(10);
+    stateText_.setPosition(Vector2f{40, WINDOW_HEIGHT / 2 - 100});
 }
 
 void Game::run()
@@ -45,6 +56,8 @@ void Game::processEvents()
                 state_ = GameState::Playing;
                 fallSpeed_ = SPEED_FREE_FALL;
                 clock_.restart();
+                score_ = 0;
+                level_ = 1;
             }
             continue;
         }
@@ -86,11 +99,29 @@ void Game::update()
                 board_.createCurrentTetromino();
         }
     }
+
+    scoreText_.setString("Score: " + std::to_string(score_));
+    levelText_.setString("Level: " + std::to_string(level_));
+
+    if (state_ == GameState::Paused)
+        stateText_.setString("PAUSED");
+    else if (state_ == GameState::GameOver)
+        stateText_.setString("GAME OVER\nPress Enter");
+    else
+        stateText_.setString("");
 }
 
 void Game::render()
 {
     window_.clear(Color::Black);
+
     board_.draw(window_);
+
+    window_.draw(scoreText_);
+    window_.draw(levelText_);
+
+    if (state_ != GameState::Playing)
+        window_.draw(stateText_);
+
     window_.display();
 }
