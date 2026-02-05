@@ -60,7 +60,6 @@ bool Board::fallCurrentTetromino()
     if (isCollide(testTetromino))
     {
         fillBoardMatrixTetrominos();
-        blocksInLine();
         createCurrentTetromino();
         return false;
     }
@@ -103,8 +102,10 @@ void Board::action(const Event& event)
     }
 }
 
-void Board::blocksInLine()
+int Board::clearFullLines()
 {
+    int cleared = 0;
+
     for (int y = BOARD_HEIGHT - 1; y >= 0; --y)
     {
         bool lineFull = true;
@@ -118,6 +119,8 @@ void Board::blocksInLine()
 
         if (lineFull)
         {
+            ++cleared;
+
             for (int i = 0; i < BOARD_WIDTH; ++i)
                 matrixBlocks_[y][i].exist_ = false;
 
@@ -127,6 +130,8 @@ void Board::blocksInLine()
             y++;
         }
     }
+
+    return cleared;
 }
 
 void Board::fillBoardMatrixTetrominos()
