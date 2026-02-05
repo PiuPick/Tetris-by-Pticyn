@@ -60,7 +60,6 @@ bool Board::fallCurrentTetromino()
     if (isCollide(testTetromino))
     {
         fillBoardMatrixTetrominos();
-        createCurrentTetromino();
         return false;
     }
     else
@@ -90,7 +89,7 @@ void Board::action(const Event& event)
                 currentTetromino_.setPosition(x + 1, y);
         }
         else if (Keyboard::isKeyPressed(Keyboard::Key::Down)) fallCurrentTetromino();
-        else if (Keyboard::isKeyPressed(Keyboard::Key::Enter)) while (fallCurrentTetromino());
+        else if (Keyboard::isKeyPressed(Keyboard::Key::Space)) while (fallCurrentTetromino());
         else if (Keyboard::isKeyPressed(Keyboard::Key::Up))
         {
             testTetromino.rotate();
@@ -136,15 +135,20 @@ int Board::clearFullLines()
 
 void Board::fillBoardMatrixTetrominos()
 {
-    array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> shape = currentTetromino_.getShape();
-    int tetrominoX = currentTetromino_.getX();
-    int tetrominoY = currentTetromino_.getY();
+    auto shape = currentTetromino_.getShape();
     for (int y = 0; y < SIZE_SHAPE; ++y)
         for (int x = 0; x < SIZE_SHAPE; ++x)
             if (shape[y][x])
             {
-                matrixBlocks_[tetrominoY + y][tetrominoX + x].exist_ = true;
-                matrixBlocks_[tetrominoY + y][tetrominoX + x].color_ = currentTetromino_.getColor();
+                int boardY = currentTetromino_.getY() + y;
+                int boardX = currentTetromino_.getX() + x;
+
+                if (boardY >= 0 && boardY < BOARD_HEIGHT &&
+                    boardX >= 0 && boardX < BOARD_WIDTH)
+                {
+                    matrixBlocks_[boardY][boardX].exist_ = true;
+                    matrixBlocks_[boardY][boardX].color_ = currentTetromino_.getColor();
+                }
             }
 }
 
