@@ -27,4 +27,5 @@ public:
     bool fallCurrentTetromino();
     void action(const sf::Event& event);
     void draw(sf::RenderWindow& window) const;
+    bool isGameOver() const;
 };

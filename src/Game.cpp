@@ -60,10 +60,9 @@ void Game::update()
 
     if (clock_.getElapsedTime().asSeconds() >= SPEED_FREE_FALL)
     {
-        bool moved = board_.fallCurrentTetromino();
+        board_.fallCurrentTetromino();
+        if (board_.isGameOver()) state_ = GameState::GameOver;
         clock_.restart();
-
-        if (!moved) state_ = GameState::GameOver;
     }
 }
 
