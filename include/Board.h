@@ -18,7 +18,6 @@ private:
     Tetromino getCurrentTetromino() const;
     bool isCollide(const Tetromino& tetromino);
     void fillBoardMatrixTetrominos();
-    void blocksInLine();
     bool tryWallKick(Tetromino& tetromino);
     void createCurrentTetromino();
 
@@ -28,4 +27,5 @@ public:
     void action(const sf::Event& event);
     void draw(sf::RenderWindow& window) const;
     bool isGameOver() const;
+    int clearFullLines();
 };
