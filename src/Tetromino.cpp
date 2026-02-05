@@ -18,9 +18,8 @@ Tetromino::Tetromino() : x_(0), y_(0)
     };
 
     color_ = colors[rand() % colors.size()];
-    type_ = Type(rand() % 7);
 
-    switch (type_)
+    switch (Type(rand() % 7))
     {
     case Type::I:
         shape_[1][0] = true;
@@ -75,7 +74,7 @@ Tetromino::Tetromino() : x_(0), y_(0)
 
 void Tetromino::rotate()
 {
-    array<array<bool, 4>, 4> temp;
+    array < array < bool, 4 >, 4 > temp;
     for (int i = 0; i < 4; ++i)
         for (int j = 0; j < 4; ++j)
             temp[j][3 - i] = shape_[i][j];
@@ -97,7 +96,11 @@ Color Tetromino::getColor() const
     return color_;
 }
 
-array<array<bool, 4>, 4> Tetromino::getShape() const
+array<array < bool, 4>
+,
+4
+>
+Tetromino::getShape() const
 {
     return shape_;
 }

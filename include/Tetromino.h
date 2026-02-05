@@ -6,17 +6,16 @@
 
 class Tetromino
 {
-    enum Type
-    {
-        I, O, T, S, Z, J, L
-    };
-
 private:
     int x_;
     int y_;
     sf::Color color_;
-    Type type_;
     std::array<std::array<bool, GameConfig::SIZE_SHAPE>, GameConfig::SIZE_SHAPE> shape_{};
+
+    enum Type
+    {
+        I, O, T, S, Z, J, L
+    };
 
 public:
     Tetromino();
