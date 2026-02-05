@@ -10,5 +10,5 @@ namespace GameConfig
     constexpr float SPEED_FREE_FALL = 0.5; // Скорость свободного падения (в секундах)
     constexpr int SIZE_SHAPE = 4; // Размер блока в котором находится тетромино
     constexpr int START_X = BOARD_WIDTH / 2 - SIZE_SHAPE / 2; // Стартовая точка тетромино на доске по x
-    constexpr int START_Y = 0 - SIZE_SHAPE / 2; // Стартовая точка тетромино на доске по y
+    constexpr int START_Y = -1; // Стартовая точка тетромино на доске по y
 }
