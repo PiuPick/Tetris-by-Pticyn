@@ -128,11 +128,11 @@ void Board::blocksInLine()
 
 void Board::fillBoardMatrixTetrominos()
 {
-    array<array<bool, 4>, 4> shape = currentTetromino_.getShape();
+    array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> shape = currentTetromino_.getShape();
     int tetrominoX = currentTetromino_.getX();
     int tetrominoY = currentTetromino_.getY();
-    for (int y = 0; y < 4; ++y)
-        for (int x = 0; x < 4; ++x)
+    for (int y = 0; y < SIZE_SHAPE; ++y)
+        for (int x = 0; x < SIZE_SHAPE; ++x)
             if (shape[y][x])
             {
                 matrixBlocks_[tetrominoY + y][tetrominoX + x].exist_ = true;
@@ -166,9 +166,9 @@ void Board::createCurrentTetromino()
 
 bool Board::isCollide(const Tetromino& tetromino)
 {
-    array<array<bool, 4>, 4> shape = tetromino.getShape();
-    for (int y = 0; y < 4; ++y)
-        for (int x = 0; x < 4; ++x)
+    array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> shape = tetromino.getShape();
+    for (int y = 0; y < SIZE_SHAPE; ++y)
+        for (int x = 0; x < SIZE_SHAPE; ++x)
             if (shape[y][x])
             {
                 int yFull = y + tetromino.getY();

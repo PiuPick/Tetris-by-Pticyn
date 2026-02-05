@@ -74,9 +74,9 @@ Tetromino::Tetromino() : x_(0), y_(0)
 
 void Tetromino::rotate()
 {
-    array < array < bool, 4 >, 4 > temp;
-    for (int i = 0; i < 4; ++i)
-        for (int j = 0; j < 4; ++j)
+    array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> temp;
+    for (int i = 0; i < SIZE_SHAPE; ++i)
+        for (int j = 0; j < SIZE_SHAPE; ++j)
             temp[j][3 - i] = shape_[i][j];
     shape_ = temp;
 }
@@ -96,9 +96,9 @@ Color Tetromino::getColor() const
     return color_;
 }
 
-array<array < bool, 4>
-,
-4
+array<array<bool, SIZE_SHAPE>
+      ,
+      SIZE_SHAPE
 >
 Tetromino::getShape() const
 {
@@ -116,8 +116,8 @@ void Tetromino::draw(RenderWindow& window) const
     RectangleShape block(Vector2f(CELL_SIZE, CELL_SIZE));
     block.setFillColor(color_);
 
-    for (int y = 0; y < 4; ++y)
-        for (int x = 0; x < 4; ++x)
+    for (int y = 0; y < SIZE_SHAPE; ++y)
+        for (int x = 0; x < SIZE_SHAPE; ++x)
             if (shape_[y][x])
             {
                 block.setPosition(
