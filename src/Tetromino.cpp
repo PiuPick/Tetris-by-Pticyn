@@ -1,13 +1,9 @@
-#include <array>
-#include <cctype>
 #include "../include/Tetromino.h"
-#include "../include/ConfigurationConstants.h"
+#include <cctype>
 #include "SFML/Graphics/RectangleShape.hpp"
-
-namespace sf
-{
-    class RenderWindow;
-}
+using namespace sf;
+using namespace std;
+using namespace GameConfig;
 
 Tetromino::Tetromino() : x_(0), y_(0)
 {
@@ -21,55 +17,54 @@ Tetromino::Tetromino() : x_(0), y_(0)
         Color::Cyan
     };
 
-    // Случайный выбор цвета и типа тетромино
     color_ = colors[rand() % colors.size()];
-    type_ = TetrominoType(rand() % 7);
+    type_ = Type(rand() % 7);
 
     switch (type_)
     {
-    case TetrominoType::I:
+    case Type::I:
         shape_[1][0] = true;
         shape_[1][1] = true;
         shape_[1][2] = true;
         shape_[1][3] = true;
         break;
 
-    case TetrominoType::O:
+    case Type::O:
         shape_[1][1] = true;
         shape_[1][2] = true;
         shape_[2][1] = true;
         shape_[2][2] = true;
         break;
 
-    case TetrominoType::T:
+    case Type::T:
         shape_[1][0] = true;
         shape_[1][1] = true;
         shape_[1][2] = true;
         shape_[2][1] = true;
         break;
 
-    case TetrominoType::S:
+    case Type::S:
         shape_[1][1] = true;
         shape_[1][2] = true;
         shape_[2][0] = true;
         shape_[2][1] = true;
         break;
 
-    case TetrominoType::Z:
+    case Type::Z:
         shape_[1][0] = true;
         shape_[1][1] = true;
         shape_[2][1] = true;
         shape_[2][2] = true;
         break;
 
-    case TetrominoType::J:
+    case Type::J:
         shape_[1][0] = true;
         shape_[1][1] = true;
         shape_[1][2] = true;
         shape_[2][0] = true;
         break;
 
-    case TetrominoType::L:
+    case Type::L:
         shape_[1][0] = true;
         shape_[1][1] = true;
         shape_[1][2] = true;
@@ -81,11 +76,9 @@ Tetromino::Tetromino() : x_(0), y_(0)
 void Tetromino::rotate()
 {
     array<array<bool, 4>, 4> temp;
-    // Транспонирование и реверсирование матрицы для поворота на 90 градусов по часовой стрелке
     for (int i = 0; i < 4; ++i)
         for (int j = 0; j < 4; ++j)
             temp[j][3 - i] = shape_[i][j];
-
     shape_ = temp;
 }
 
@@ -99,19 +92,9 @@ int Tetromino::getY() const
     return y_;
 }
 
-char Tetromino::getType() const
-{
-    return type_;
-}
-
 Color Tetromino::getColor() const
 {
     return color_;
-}
-
-Tetromino::TetrominoType Tetromino::getTetrominoType() const
-{
-    return type_;
 }
 
 array<array<bool, 4>, 4> Tetromino::getShape() const
@@ -127,7 +110,7 @@ void Tetromino::setPosition(int x, int y)
 
 void Tetromino::draw(RenderWindow& window) const
 {
-    RectangleShape block(Vector2f(GameConfig::CELL_SIZE, GameConfig::CELL_SIZE));
+    RectangleShape block(Vector2f(CELL_SIZE, CELL_SIZE));
     block.setFillColor(color_);
 
     for (int y = 0; y < 4; ++y)
@@ -136,8 +119,8 @@ void Tetromino::draw(RenderWindow& window) const
             {
                 block.setPosition(
                     Vector2f(
-                        (x_ + x) * GameConfig::CELL_SIZE,
-                        (y_ + y) * GameConfig::CELL_SIZE));
+                        (x_ + x) * CELL_SIZE,
+                        (y_ + y) * CELL_SIZE));
                 window.draw(block);
             }
 }

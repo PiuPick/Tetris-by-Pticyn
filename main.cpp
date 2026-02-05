@@ -1,6 +1,4 @@
-#include <SFML/Graphics.hpp>
 #include "include/Board.h"
-#include "include/Tetromino.h"
 using namespace sf;
 using namespace std;
 using namespace GameConfig;

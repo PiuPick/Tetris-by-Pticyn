@@ -1,13 +1,12 @@
 #pragma once
+#include "ConfigurationConstants.h"
 #include <array>
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
-using namespace sf;
-using namespace std;
 
 class Tetromino
 {
-    enum TetrominoType
+    enum Type
     {
         I, O, T, S, Z, J, L
     };
@@ -15,19 +14,17 @@ class Tetromino
 private:
     int x_;
     int y_;
-    Color color_;
-    TetrominoType type_;
-    array<array<bool, 4>, 4> shape_ {};
+    sf::Color color_;
+    Type type_;
+    std::array<std::array<bool, GameConfig::SIZE_SHAPE>, GameConfig::SIZE_SHAPE> shape_{};
 
 public:
     Tetromino();
     void rotate();
     int getX() const;
     int getY() const;
-    char getType() const;
-    Color getColor() const;
-    TetrominoType getTetrominoType() const;
-    array<array<bool, 4>, 4> getShape() const;
+    sf::Color getColor() const;
+    std::array<std::array<bool, GameConfig::SIZE_SHAPE>, GameConfig::SIZE_SHAPE> getShape() const;
     void setPosition(int x, int y);
-    void draw(RenderWindow& window) const;
+    void draw(sf::RenderWindow& window) const;
 };

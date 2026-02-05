@@ -2,9 +2,6 @@
 #include "Tetromino.h"
 #include "ConfigurationConstants.h"
 #include "SFML/Graphics/VertexArray.hpp"
-using namespace sf;
-using namespace std;
-using namespace GameConfig;
 
 class Board
 {
@@ -12,14 +9,14 @@ private:
     struct Block
     {
         bool exist_;
-        Color color_;
+        sf::Color color_;
     };
 
     Tetromino currentTetromino_;
-    VertexArray grid_;
-    array<array<Block, BOARD_WIDTH>, BOARD_HEIGHT> matrixBlocks_ = {};
+    sf::VertexArray grid_;
+    std::array<std::array<Block, GameConfig::BOARD_WIDTH>, GameConfig::BOARD_HEIGHT> matrixBlocks_ = {};
     Tetromino getCurrentTetromino() const;
-    bool isCollide(Tetromino& tetromino);
+    bool isCollide(const Tetromino& tetromino);
     void fillBoardMatrixTetrominos();
     void blocksInLine();
     bool tryWallKick(Tetromino& tetromino);
@@ -28,6 +25,6 @@ private:
 public:
     Board();
     bool fallCurrentTetromino();
-    void action(const Event& event);
-    void draw(RenderWindow& window) const;
+    void action(const sf::Event& event);
+    void draw(sf::RenderWindow& window) const;
 };
