@@ -13,8 +13,9 @@ FetchContent_MakeAvailable(sfml)
 add_executable(
         ${PROJECT_NAME}
         main.cpp
-        src/Tetromino.cpp
+        src/Game.cpp
         src/Board.cpp
+        src/Tetromino.cpp
 )
 target_link_libraries(
         ${PROJECT_NAME}
