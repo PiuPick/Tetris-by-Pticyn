@@ -1,6 +1,7 @@
 #include "../include/Board.h"
 #include "SFML/Graphics/RectangleShape.hpp"
-#include "SFML/Graphics/VertexArray.hpp"
+using namespace sf;
+using namespace std;
 using namespace GameConfig;
 
 Board::Board()
@@ -144,7 +145,7 @@ bool Board::tryWallKick(Tetromino& tetromino)
     int x = tetromino.getX();
     int y = tetromino.getY();
 
-    static const int kicks[] = {-1, 1, -2, 2};
+    static int kicks[] = {-1, 1, -2, 2};
 
     for (int dx : kicks)
     {
@@ -163,7 +164,7 @@ void Board::createCurrentTetromino()
     currentTetromino_.setPosition(START_X, START_Y);
 }
 
-bool Board::isCollide(Tetromino& tetromino)
+bool Board::isCollide(const Tetromino& tetromino)
 {
     array<array<bool, 4>, 4> shape = tetromino.getShape();
     for (int y = 0; y < 4; ++y)
