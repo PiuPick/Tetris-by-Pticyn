@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include "Tetromino.h"
 #include "ConfigurationConstants.h"
 #include "SFML/Graphics/VertexArray.hpp"
@@ -10,19 +9,25 @@ using namespace GameConfig;
 class Board
 {
 private:
-    unsigned short width_;
-    unsigned short height_;
-    vector<Tetromino> tetrominos_;
-    VertexArray grid_;
+    struct Block
+    {
+        bool exist_;
+        Color color_;
+    };
+
     Tetromino currentTetromino_;
-    array<array<bool, BOARD_WIDTH>, WINDOW_HEIGHT> boardMatrixTetrominos_ = {};
+    VertexArray grid_;
+    array<array<Block, BOARD_WIDTH>, BOARD_HEIGHT> matrixBlocks_ = {};
+    Tetromino getCurrentTetromino() const;
+    bool isCollide(Tetromino& tetromino);
     void fillBoardMatrixTetrominos();
-    bool isCollide(Tetromino tetromino);
+    void blocksInLine();
+    bool tryWallKick(Tetromino& tetromino);
+    void createCurrentTetromino();
 
 public:
     Board();
-    void draw(RenderWindow& window) const;
-    Tetromino getCurrentTetromino() const;
     bool fallCurrentTetromino();
     void action(const Event& event);
+    void draw(RenderWindow& window) const;
 };
