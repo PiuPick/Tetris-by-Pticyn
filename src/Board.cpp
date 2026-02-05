@@ -8,16 +8,16 @@ Board::Board()
 {
     createCurrentTetromino();
 
-    VertexArray grid(PrimitiveType::Lines, (BOARD_WIDTH + BOARD_HEIGHT + 2) * 2);
-    for (int x = 0; x < BOARD_WIDTH + 1; ++x)
+    VertexArray grid(PrimitiveType::Lines, (BOARD_BLOCK_WIDTH + BOARD_BLOCK_HEIGHT + 2) * 2);
+    for (int x = 0; x < BOARD_BLOCK_WIDTH + 1; ++x)
     {
         grid.append(Vertex(Vector2f(x * CELL_SIZE, 0), Color::White));
         grid.append(Vertex(Vector2f(x * CELL_SIZE, WINDOW_HEIGHT), Color::White));
     }
-    for (int y = 0; y < BOARD_HEIGHT + 1; ++y)
+    for (int y = 0; y < BOARD_BLOCK_HEIGHT + 1; ++y)
     {
         grid.append(Vertex(Vector2f(0, y * CELL_SIZE), Color::White));
-        grid.append(Vertex(Vector2f(WINDOW_WIDTH, y * CELL_SIZE), Color::White));
+        grid.append(Vertex(Vector2f(BOARD_BLOCK_WIDTH * CELL_SIZE, y * CELL_SIZE), Color::White));
     }
     grid_ = grid;
 }
@@ -26,8 +26,8 @@ void Board::draw(RenderWindow& window) const
 {
     currentTetromino_.draw(window);
 
-    for (int y = BOARD_HEIGHT - 1; y >= 0; --y)
-        for (int x = BOARD_WIDTH - 1; x >= 0; --x)
+    for (int y = BOARD_BLOCK_HEIGHT - 1; y >= 0; --y)
+        for (int x = BOARD_BLOCK_WIDTH - 1; x >= 0; --x)
             if (matrixBlocks_[y][x].exist_)
             {
                 RectangleShape block(Vector2f(CELL_SIZE, CELL_SIZE));
@@ -47,7 +47,7 @@ bool Board::isGameOver() const
     return false;
 }
 
-Tetromino Board::getCurrentTetromino() const
+const Tetromino& Board::getCurrentTetromino() const
 {
     return currentTetromino_;
 }
@@ -105,11 +105,11 @@ int Board::clearFullLines()
 {
     int cleared = 0;
 
-    for (int y = BOARD_HEIGHT - 1; y >= 0; --y)
+    for (int y = BOARD_BLOCK_HEIGHT - 1; y >= 0; --y)
     {
         bool lineFull = true;
 
-        for (int x = 0; x < BOARD_WIDTH; ++x)
+        for (int x = 0; x < BOARD_BLOCK_WIDTH; ++x)
             if (!matrixBlocks_[y][x].exist_)
             {
                 lineFull = false;
@@ -120,11 +120,11 @@ int Board::clearFullLines()
         {
             ++cleared;
 
-            for (int i = 0; i < BOARD_WIDTH; ++i)
+            for (int i = 0; i < BOARD_BLOCK_WIDTH; ++i)
                 matrixBlocks_[y][i].exist_ = false;
 
             for (int row = y; row > 0; --row)
-                for (int i = 0; i < BOARD_WIDTH; ++i)
+                for (int i = 0; i < BOARD_BLOCK_WIDTH; ++i)
                     matrixBlocks_[row][i] = matrixBlocks_[row - 1][i];
             y++;
         }
@@ -143,8 +143,8 @@ void Board::fillBoardMatrixTetrominos()
                 int boardY = currentTetromino_.getY() + y;
                 int boardX = currentTetromino_.getX() + x;
 
-                if (boardY >= 0 && boardY < BOARD_HEIGHT &&
-                    boardX >= 0 && boardX < BOARD_WIDTH)
+                if (boardY >= 0 && boardY < BOARD_BLOCK_HEIGHT &&
+                    boardX >= 0 && boardX < BOARD_BLOCK_WIDTH)
                 {
                     matrixBlocks_[boardY][boardX].exist_ = true;
                     matrixBlocks_[boardY][boardX].color_ = currentTetromino_.getColor();
@@ -176,6 +176,11 @@ void Board::createCurrentTetromino()
     currentTetromino_.setPosition(START_X, START_Y);
 }
 
+void Board::setCurrentTetromino(const Tetromino& tetromino)
+{
+    currentTetromino_ = tetromino;
+}
+
 bool Board::isCollide(const Tetromino& tetromino)
 {
     array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> shape = tetromino.getShape();
@@ -186,8 +191,8 @@ bool Board::isCollide(const Tetromino& tetromino)
                 int yFull = y + tetromino.getY();
                 int xFull = x + tetromino.getX();
 
-                if (yFull == BOARD_HEIGHT ||
-                    xFull < 0 || xFull >= BOARD_WIDTH ||
+                if (yFull == BOARD_BLOCK_HEIGHT ||
+                    xFull < 0 || xFull >= BOARD_BLOCK_WIDTH ||
                     matrixBlocks_[yFull][xFull].exist_)
                     return true;
             }

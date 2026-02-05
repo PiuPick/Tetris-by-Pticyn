@@ -14,8 +14,7 @@ private:
 
     Tetromino currentTetromino_;
     sf::VertexArray grid_;
-    std::array<std::array<Block, GameConfig::BOARD_WIDTH>, GameConfig::BOARD_HEIGHT> matrixBlocks_ = {};
-    Tetromino getCurrentTetromino() const;
+    std::array<std::array<Block, GameConfig::BOARD_BLOCK_WIDTH>, GameConfig::BOARD_BLOCK_HEIGHT> matrixBlocks_ = {};
     bool isCollide(const Tetromino& tetromino);
     void fillBoardMatrixTetrominos();
     bool tryWallKick(Tetromino& tetromino);
@@ -28,4 +27,6 @@ public:
     bool isGameOver() const;
     int clearFullLines();
     void createCurrentTetromino();
+    void setCurrentTetromino(const Tetromino& tetromino);
+    const Tetromino& getCurrentTetromino() const;
 };
