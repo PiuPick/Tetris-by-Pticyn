@@ -39,6 +39,14 @@ void Board::draw(RenderWindow& window) const
     window.draw(grid_);
 }
 
+bool Board::isGameOver() const
+{
+    for (const Block& block : matrixBlocks_[0])
+        if (block.exist_)
+            return true;
+    return false;
+}
+
 Tetromino Board::getCurrentTetromino() const
 {
     return currentTetromino_;
@@ -53,11 +61,6 @@ bool Board::fallCurrentTetromino()
     {
         fillBoardMatrixTetrominos();
         blocksInLine();
-
-        for (Block block : matrixBlocks_[0])
-            if (block.exist_)
-                return false;
-
         createCurrentTetromino();
         return false;
     }
