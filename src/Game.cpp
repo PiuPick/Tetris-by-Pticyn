@@ -43,6 +43,7 @@ void Game::processEvents()
             {
                 board_ = Board();
                 state_ = GameState::Playing;
+                fallSpeed_ = SPEED_FREE_FALL;
                 clock_.restart();
             }
             continue;
@@ -81,6 +82,8 @@ void Game::update()
 
             if (board_.isGameOver())
                 state_ = GameState::GameOver;
+            else
+                board_.createCurrentTetromino();
         }
     }
 }
