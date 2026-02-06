@@ -16,6 +16,7 @@ add_executable(
         src/Game.cpp
         src/Board.cpp
         src/Tetromino.cpp
+        src/ScoreManager.cpp
 )
 target_link_libraries(
         ${PROJECT_NAME}

@@ -7,21 +7,28 @@ using namespace GameConfig;
 
 Game::Game() :
     window_(VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Tetris-by-Pticyn"),
+    scoreManager_("scores.txt"),
     font_(Font("../res/fonts/consolas.ttf")),
+    namePromptText_(font_, "Enter name for\nstart game:", 100),
+    nameValueText_(font_, "", 100),
+    bestScoreText_(font_, "", 20),
     scoreText_(font_, "", 20),
     levelText_(font_, "", 20),
     nextText_(font_, "NEXT TETROMINO", 20),
     stateText_(font_, "", 40),
-    state_(GameState::Playing),
+    state_(GameState::EnterName),
     score_(0),
     level_(1),
     fallSpeed_(SPEED_FREE_FALL)
 {
     clock_.start();
 
-    scoreText_.setPosition(Vector2f{PANEL_X, CELL_SIZE * 5});
-    levelText_.setPosition(Vector2f{PANEL_X, CELL_SIZE * 6});
-    nextText_.setPosition(Vector2f{PANEL_X, CELL_SIZE});
+    nameValueText_.setPosition({CELL_SIZE, WINDOW_HEIGHT / 2});
+    bestScoreText_.setPosition({PANEL_X, CELL_SIZE * 9});
+
+    scoreText_.setPosition({PANEL_X, CELL_SIZE * 5});
+    levelText_.setPosition({PANEL_X, CELL_SIZE * 6});
+    nextText_.setPosition({PANEL_X + CELL_SIZE, CELL_SIZE});
 
     stateText_.setFillColor(Color::Red);
     stateText_.setOutlineColor(Color::White);
@@ -47,6 +54,32 @@ void Game::processEvents()
         if (event->is<Event::Closed>())
         {
             window_.close();
+            continue;
+        }
+
+        if (state_ == GameState::EnterName)
+        {
+            if (event->is<Event::TextEntered>())
+            {
+                char c = static_cast<char>(event->getIf<Event::TextEntered>()->unicode);
+
+                if (isalnum(c) && playerName_.size() < 10)
+                    playerName_ += c;
+                else if (c == '\b' && !playerName_.empty())
+                    playerName_.pop_back();
+
+                nameValueText_.setString(playerName_);
+            }
+
+            if (event->is<Event::KeyPressed>() &&
+                event->getIf<Event::KeyPressed>()->code == Keyboard::Key::Enter &&
+                !playerName_.empty())
+            {
+                state_ = GameState::Playing;
+                namePromptText_.setPosition({PANEL_X, CELL_SIZE * 8});
+                namePromptText_.setCharacterSize(20);
+                namePromptText_.setString("Your name: " + playerName_);
+            }
             continue;
         }
 
@@ -86,12 +119,13 @@ void Game::update()
         if (state_ == GameState::Paused)
         {
             stateText_.setString("PAUSE");
-            stateText_.setPosition(Vector2f{PANEL_X + CELL_SIZE, WINDOW_HEIGHT / 2});
+            stateText_.setPosition({PANEL_X + CELL_SIZE, WINDOW_HEIGHT / 2 + CELL_SIZE});
         }
         else if (state_ == GameState::GameOver)
         {
             stateText_.setString("GAME OVER");
-            stateText_.setPosition(Vector2f{PANEL_X, WINDOW_HEIGHT / 2});
+            stateText_.setPosition({PANEL_X + CELL_SIZE / 2, WINDOW_HEIGHT / 2 + CELL_SIZE});
+            scoreManager_.updateScore(playerName_, score_);
         }
         return;
     }
@@ -121,12 +155,21 @@ void Game::update()
         }
     }
 
-    scoreText_.setString("Score: " + std::to_string(score_));
-    levelText_.setString("Level: " + std::to_string(level_));
+    scoreText_.setString("Score: " + to_string(score_));
+    levelText_.setString("Level: " + to_string(level_));
 }
 
 void Game::render()
 {
+    if (state_ == GameState::EnterName)
+    {
+        window_.clear(Color::Black);
+        window_.draw(namePromptText_);
+        window_.draw(nameValueText_);
+        window_.display();
+        return;
+    }
+
     window_.clear(Color::Black);
 
     board_.draw(window_);
@@ -134,8 +177,13 @@ void Game::render()
     window_.draw(scoreText_);
     window_.draw(levelText_);
     window_.draw(nextText_);
+    window_.draw(namePromptText_);
     nextTetromino_.setPosition(BOARD_BLOCK_WIDTH + 1, 1);
     nextTetromino_.draw(window_);
+
+    auto [bestName, bestScore] = scoreManager_.getBestScore();
+    bestScoreText_.setString("Best: " + bestName + " - " + to_string(bestScore));
+    window_.draw(bestScoreText_);
 
     if (state_ != GameState::Playing)
         window_.draw(stateText_);
