@@ -74,7 +74,7 @@ Tetromino::Tetromino() : x_(0), y_(0)
 
 void Tetromino::rotate()
 {
-    array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> temp;
+    array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> temp{};
     for (int i = 0; i < SIZE_SHAPE; ++i)
         for (int j = 0; j < SIZE_SHAPE; ++j)
             temp[j][3 - i] = shape_[i][j];
@@ -120,10 +120,7 @@ void Tetromino::draw(RenderWindow& window) const
         for (int x = 0; x < SIZE_SHAPE; ++x)
             if (shape_[y][x])
             {
-                block.setPosition(
-                    Vector2f(
-                        (x_ + x) * CELL_SIZE,
-                        (y_ + y) * CELL_SIZE));
+                block.setPosition(Vector2f((x_ + x) * CELL_SIZE, (y_ + y) * CELL_SIZE));
                 window.draw(block);
             }
 }

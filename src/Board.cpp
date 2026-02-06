@@ -193,7 +193,7 @@ bool Board::isCollide(const Tetromino& tetromino)
 
                 if (yFull == BOARD_BLOCK_HEIGHT ||
                     xFull < 0 || xFull >= BOARD_BLOCK_WIDTH ||
-                    matrixBlocks_[yFull][xFull].exist_)
+                    (yFull >= 0 && matrixBlocks_[yFull][xFull].exist_))
                     return true;
             }
     return false;
