@@ -23,10 +23,14 @@ private:
     sf::Font font_;
     sf::Text scoreText_;
     sf::Text levelText_;
+    sf::Text nextText_;
     sf::Text stateText_;
+    Tetromino currentTetromino_;
+    Tetromino nextTetromino_;
     void processEvents();
     void update();
     void render();
+    void drawNextTetromino();
 
 public:
     Game();
