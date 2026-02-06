@@ -176,7 +176,7 @@ void Board::createCurrentTetromino()
     currentTetromino_.setPosition(START_X, START_Y);
 }
 
-void Board::setCurrentTetromino(const Tetromino& tetromino)
+void Board::createCurrentTetromino(const Tetromino& tetromino)
 {
     currentTetromino_ = tetromino;
 }

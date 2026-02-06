@@ -21,16 +21,11 @@ private:
     float fallSpeed_;
     sf::RenderWindow window_;
     sf::Font font_;
-    sf::Text scoreText_;
-    sf::Text levelText_;
-    sf::Text nextText_;
-    sf::Text stateText_;
-    Tetromino currentTetromino_;
+    sf::Text scoreText_, levelText_, nextText_, stateText_;
     Tetromino nextTetromino_;
     void processEvents();
     void update();
     void render();
-    void drawNextTetromino();
 
 public:
     Game();

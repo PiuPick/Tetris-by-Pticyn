@@ -28,6 +28,6 @@ public:
     bool isGameOver() const;
     int clearFullLines();
     void createCurrentTetromino();
-    void setCurrentTetromino(const Tetromino& tetromino);
+    void createCurrentTetromino(const Tetromino& tetromino);
     const Tetromino& getCurrentTetromino() const;
 };

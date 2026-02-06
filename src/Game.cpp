@@ -27,11 +27,7 @@ Game::Game() :
     stateText_.setOutlineColor(Color::White);
     stateText_.setOutlineThickness(2);
 
-    currentTetromino_ = Tetromino();
     nextTetromino_ = Tetromino();
-
-    currentTetromino_.setPosition(START_X, START_Y);
-    board_.setCurrentTetromino(currentTetromino_);
 }
 
 void Game::run()
@@ -116,11 +112,9 @@ void Game::update()
                 fallSpeed_ = SPEED_FREE_FALL / level_;
             }
 
-            currentTetromino_ = nextTetromino_;
-            currentTetromino_.setPosition(START_X, START_Y);
+            nextTetromino_.setPosition(START_X, START_Y);
+            board_.createCurrentTetromino(nextTetromino_);
             nextTetromino_ = Tetromino();
-
-            board_.setCurrentTetromino(currentTetromino_);
 
             if (board_.isGameOver())
                 state_ = GameState::GameOver;
@@ -140,27 +134,11 @@ void Game::render()
     window_.draw(scoreText_);
     window_.draw(levelText_);
     window_.draw(nextText_);
-    drawNextTetromino();
-
+    nextTetromino_.setPosition(BOARD_BLOCK_WIDTH + 1, 1);
+    nextTetromino_.draw(window_);
 
     if (state_ != GameState::Playing)
         window_.draw(stateText_);
 
     window_.display();
-}
-
-void Game::drawNextTetromino()
-{
-    RectangleShape block(Vector2f(CELL_SIZE, CELL_SIZE));
-    block.setFillColor(nextTetromino_.getColor());
-
-    auto shape = nextTetromino_.getShape();
-
-    for (int y = 0; y < SIZE_SHAPE; ++y)
-        for (int x = 0; x < SIZE_SHAPE; ++x)
-            if (shape[y][x])
-            {
-                block.setPosition(Vector2f(PANEL_X + x * CELL_SIZE, PANEL_Y + y * CELL_SIZE));
-                window_.draw(block);
-            }
 }
