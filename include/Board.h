@@ -1,9 +1,10 @@
 #pragma once
 #include "Tetromino.h"
+#include "DrawableEntity.h"
 #include "ConfigurationConstants.h"
 #include "SFML/Graphics/VertexArray.hpp"
 
-class Board
+class Board : public DrawableEntity
 {
 private:
     struct Block
@@ -23,7 +24,7 @@ public:
     Board();
     bool fallCurrentTetromino();
     void action(const sf::Event& event);
-    void draw(sf::RenderWindow& window) const;
+    void draw(sf::RenderWindow& window) const override;
     bool isGameOver() const;
     int clearFullLines();
     void createCurrentTetromino();
