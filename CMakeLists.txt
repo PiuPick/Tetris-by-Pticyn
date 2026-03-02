@@ -17,6 +17,8 @@ add_executable(
         src/Board.cpp
         src/Tetromino.cpp
         src/ScoreManager.cpp
+        include/Heap.h
+        src/Heap.cpp
 )
 target_link_libraries(
         ${PROJECT_NAME}

@@ -34,7 +34,7 @@ Game::Game() :
     stateText_.setOutlineColor(Color::White);
     stateText_.setOutlineThickness(2);
 
-    nextTetromino_ = Tetromino();
+    createNextTetromino();
 }
 
 void Game::run()
@@ -132,12 +132,12 @@ void Game::update()
 
     if (clock_.getElapsedTime().asSeconds() >= fallSpeed_)
     {
-        bool moved = board_.fallCurrentTetromino();
+        bool moved = board_.fallTetromino();
         clock_.restart();
 
         if (!moved)
         {
-            int lines = board_.clearFullLines();
+            int lines = board_.getClearedLines();
             if (lines > 0)
             {
                 static const int scores[] = {0, 100, 300, 500, 800};
@@ -147,10 +147,10 @@ void Game::update()
             }
 
             nextTetromino_.setPosition(START_X, START_Y);
-            board_.createCurrentTetromino(nextTetromino_);
-            nextTetromino_ = Tetromino();
+            board_.setTetromino(nextTetromino_);
+            createNextTetromino();
 
-            if (board_.isGameOver())
+            if (board_.isOverFlowHeap())
                 state_ = GameState::GameOver;
         }
     }
@@ -178,7 +178,6 @@ void Game::render()
     window_.draw(levelText_);
     window_.draw(nextText_);
     window_.draw(namePromptText_);
-    nextTetromino_.setPosition(BOARD_BLOCK_WIDTH + 1, 1);
     nextTetromino_.draw(window_);
 
     auto [bestName, bestScore] = scoreManager_.getBestScore();
@@ -189,4 +188,10 @@ void Game::render()
         window_.draw(stateText_);
 
     window_.display();
+}
+
+void Game::createNextTetromino()
+{
+    nextTetromino_ = Tetromino();
+    nextTetromino_.setPosition(BOARD_BLOCK_WIDTH + 1, 1);
 }

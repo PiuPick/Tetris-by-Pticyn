@@ -2,32 +2,30 @@
 #include "Tetromino.h"
 #include "DrawableEntity.h"
 #include "ConfigurationConstants.h"
+#include "Heap.h"
 #include "SFML/Graphics/VertexArray.hpp"
 
 class Board : public DrawableEntity
 {
 private:
-    struct Block
-    {
-        bool exist_;
-        sf::Color color_;
-    };
-
-    Tetromino currentTetromino_;
+    Tetromino tetromino_;
+    Heap heap_;
     sf::VertexArray grid_;
-    std::array<std::array<Block, GameConfig::BOARD_BLOCK_WIDTH>, GameConfig::BOARD_BLOCK_HEIGHT> matrixBlocks_ = {};
-    bool isCollide(const Tetromino& tetromino);
-    void fillBoardMatrixTetrominos();
-    bool tryWallKick(Tetromino& tetromino);
+
+    void createGrid();
+    bool isCollide(const Tetromino& tetromino) const;
+    Tetromino& tryWallKick(Tetromino& tetromino) const;
 
 public:
     Board();
-    bool fallCurrentTetromino();
+
+    bool fallTetromino();
     void action(const sf::Event& event);
+
+    const Tetromino& getTetromino() const;
+    unsigned getClearedLines() const;
+    bool isOverFlowHeap() const;
+    void setTetromino(const Tetromino& tetromino);
+
     void draw(sf::RenderWindow& window) const override;
-    bool isGameOver() const;
-    int clearFullLines();
-    void createCurrentTetromino();
-    void createCurrentTetromino(const Tetromino& tetromino);
-    const Tetromino& getCurrentTetromino() const;
 };

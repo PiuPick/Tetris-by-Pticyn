@@ -5,21 +5,9 @@ using namespace sf;
 using namespace std;
 using namespace GameConfig;
 
-Tetromino::Tetromino() : x_(0), y_(0)
+void Tetromino::chooseType()
 {
-    std::array<Color, 7> colors = {
-        Color::White,
-        Color::Red,
-        Color::Green,
-        Color::Blue,
-        Color::Yellow,
-        Color::Magenta,
-        Color::Cyan
-    };
-
-    color_ = colors[rand() % colors.size()];
-
-    switch (Type(rand() % 7))
+    switch (static_cast<Type>(rand() % 7))
     {
     case Type::I:
         shape_[1][0] = true;
@@ -72,6 +60,38 @@ Tetromino::Tetromino() : x_(0), y_(0)
     }
 }
 
+Tetromino::Tetromino() : x_(0), y_(0)
+{
+    chooseType();
+
+    std::array<Color, 7> colors = {
+        Color::White,
+        Color::Red,
+        Color::Green,
+        Color::Blue,
+        Color::Yellow,
+        Color::Magenta,
+        Color::Cyan
+    };
+
+    color_ = colors[rand() % colors.size()];
+}
+
+void Tetromino::moveLeft()
+{
+    x_--;
+}
+
+void Tetromino::moveRight()
+{
+    x_++;
+}
+
+void Tetromino::moveDown()
+{
+    y_++;
+}
+
 void Tetromino::rotate()
 {
     array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> temp{};
@@ -96,11 +116,7 @@ Color Tetromino::getColor() const
     return color_;
 }
 
-array<array<bool, SIZE_SHAPE>
-      ,
-      SIZE_SHAPE
->
-Tetromino::getShape() const
+const array<array<bool, SIZE_SHAPE>,SIZE_SHAPE>& Tetromino::getShape() const
 {
     return shape_;
 }

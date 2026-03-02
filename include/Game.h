@@ -29,6 +29,7 @@ private:
     void processEvents();
     void update();
     void render();
+    void createNextTetromino();
 
 public:
     Game();
