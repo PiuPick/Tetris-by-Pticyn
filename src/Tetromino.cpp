@@ -1,25 +1,13 @@
 #include "../include/Tetromino.h"
-#include <cctype>
 #include "SFML/Graphics/RectangleShape.hpp"
-using namespace sf;
-using namespace std;
+
 using namespace GameConfig;
+using namespace std;
+using namespace sf;
 
-Tetromino::Tetromino() : x_(0), y_(0)
+void Tetromino::chooseType()
 {
-    std::array<Color, 7> colors = {
-        Color::White,
-        Color::Red,
-        Color::Green,
-        Color::Blue,
-        Color::Yellow,
-        Color::Magenta,
-        Color::Cyan
-    };
-
-    color_ = colors[rand() % colors.size()];
-
-    switch (Type(rand() % 7))
+    switch (static_cast<Type>(rand() % 7))
     {
     case Type::I:
         shape_[1][0] = true;
@@ -72,11 +60,43 @@ Tetromino::Tetromino() : x_(0), y_(0)
     }
 }
 
+Tetromino::Tetromino() : x_(0), y_(0)
+{
+    chooseType();
+
+    std::array<Color, 7> colors = {
+        Color::White,
+        Color::Red,
+        Color::Green,
+        Color::Blue,
+        Color::Yellow,
+        Color::Magenta,
+        Color::Cyan
+    };
+
+    color_ = colors[rand() % colors.size()];
+}
+
+void Tetromino::moveLeft()
+{
+    x_--;
+}
+
+void Tetromino::moveRight()
+{
+    x_++;
+}
+
+void Tetromino::moveDown()
+{
+    y_++;
+}
+
 void Tetromino::rotate()
 {
-    array < array < bool, 4 >, 4 > temp;
-    for (int i = 0; i < 4; ++i)
-        for (int j = 0; j < 4; ++j)
+    array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> temp{};
+    for (int i = 0; i < SIZE_SHAPE; ++i)
+        for (int j = 0; j < SIZE_SHAPE; ++j)
             temp[j][3 - i] = shape_[i][j];
     shape_ = temp;
 }
@@ -96,34 +116,13 @@ Color Tetromino::getColor() const
     return color_;
 }
 
-array<array < bool, 4>
-,
-4
->
-Tetromino::getShape() const
+const array<array<bool, SIZE_SHAPE>, SIZE_SHAPE>& Tetromino::getShape() const
 {
     return shape_;
 }
 
-void Tetromino::setPosition(int x, int y)
+void Tetromino::setPosition(const int x, const int y)
 {
     x_ = x;
     y_ = y;
-}
-
-void Tetromino::draw(RenderWindow& window) const
-{
-    RectangleShape block(Vector2f(CELL_SIZE, CELL_SIZE));
-    block.setFillColor(color_);
-
-    for (int y = 0; y < 4; ++y)
-        for (int x = 0; x < 4; ++x)
-            if (shape_[y][x])
-            {
-                block.setPosition(
-                    Vector2f(
-                        (x_ + x) * CELL_SIZE,
-                        (y_ + y) * CELL_SIZE));
-                window.draw(block);
-            }
 }

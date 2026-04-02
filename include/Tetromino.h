@@ -2,13 +2,11 @@
 #include "ConfigurationConstants.h"
 #include <array>
 #include "SFML/Graphics/Color.hpp"
-#include "SFML/Graphics/RenderWindow.hpp"
 
 class Tetromino
 {
 private:
-    int x_;
-    int y_;
+    int x_, y_;
     sf::Color color_;
     std::array<std::array<bool, GameConfig::SIZE_SHAPE>, GameConfig::SIZE_SHAPE> shape_{};
 
@@ -17,13 +15,20 @@ private:
         I, O, T, S, Z, J, L
     };
 
+    void chooseType();
+
 public:
     Tetromino();
+
+    void moveLeft();
+    void moveRight();
+    void moveDown();
     void rotate();
+
     int getX() const;
     int getY() const;
     sf::Color getColor() const;
-    std::array<std::array<bool, GameConfig::SIZE_SHAPE>, GameConfig::SIZE_SHAPE> getShape() const;
+    const std::array<std::array<bool, GameConfig::SIZE_SHAPE>, GameConfig::SIZE_SHAPE>& getShape() const;
+
     void setPosition(int x, int y);
-    void draw(sf::RenderWindow& window) const;
 };

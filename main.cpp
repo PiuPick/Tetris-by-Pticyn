@@ -1,34 +1,76 @@
-#include "include/Board.h"
-using namespace sf;
+#include "include/Game.h"
+#include "include/ConsoleMenu.h"
+#include "include/TestRunner.h"
+#include "include/ScoreManager.h"
+#include <iostream>
+#include <string>
+#include <windows.h>
+
 using namespace std;
-using namespace GameConfig;
+
+static void showScores()
+{
+    ScoreManager sm;
+    auto [bestName, bestScore] = sm.getBestScore();
+
+    cout << "\n";
+    cout << "  " << string(40, '=') << "\n";
+    cout << "       Таблица рекордов\n";
+    cout << "  " << string(40, '=') << "\n";
+
+    if (bestName.empty())
+        cout << "  Рекордов пока нет.\n";
+    else
+    {
+        cout << "  Лучший результат:\n";
+        cout << "    Игрок: " << bestName << "\n";
+        cout << "    Очки:  " << bestScore << "\n";
+    }
+
+    cout << "  " << string(40, '=') << "\n";
+    cout << "\n  Нажмите Enter...";
+    string tmp;
+    getline(cin, tmp);
+}
+
+static void runTests()
+{
+    cout << "\n  Запуск тестов...\n";
+    TestRunner runner;
+    runner.runAll();
+    runner.printResults();
+    cout << "  Нажмите Enter...";
+    string tmp;
+    getline(cin, tmp);
+}
 
 int main()
 {
-    RenderWindow window(VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Tetris-by-Pticyn");
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
 
-    Board board;
-    Clock clock;
-    clock.start();
-
-    while (window.isOpen())
+    while (true)
     {
-        while (const optional event = window.pollEvent())
-        {
-            if (event->is<Event::Closed>())
-                window.close();
-            board.action(*event);
-        }
+        MenuChoice choice = ConsoleMenu::showMainMenu();
 
-        if (clock.getElapsedTime().asSeconds() >= SPEED_FREE_FALL)
+        switch (choice)
         {
-            board.fallCurrentTetromino();
-            clock.restart();
+        case MenuChoice::Play:
+            {
+                string name = ConsoleMenu::askPlayerName();
+                Game game(name);
+                game.run();
+                break;
+            }
+        case MenuChoice::RunTests:
+            runTests();
+            break;
+        case MenuChoice::ShowScores:
+            showScores();
+            break;
+        case MenuChoice::Exit:
+            cout << "\n  До свидания!\n\n";
+            return 0;
         }
-
-        window.clear(Color::Black);
-        board.draw(window);
-        window.display();
     }
-    return 0;
 }

@@ -1,30 +1,49 @@
 #pragma once
 #include "Tetromino.h"
-#include "ConfigurationConstants.h"
+#include "Heap.h"
 #include "SFML/Graphics/VertexArray.hpp"
 
 class Board
 {
 private:
-    struct Block
+    struct InputCommand
     {
-        bool exist_;
-        sf::Color color_;
+        bool moveLeft = false;
+        bool moveRight = false;
+        bool rotate = false;
+        bool softDrop = false;
+        bool hardDrop = false;
     };
 
-    Tetromino currentTetromino_;
+    Tetromino tetromino_;
+    Heap heap_;
+
+    bool isFix_;
+    InputCommand command_;
     sf::VertexArray grid_;
-    std::array<std::array<Block, GameConfig::BOARD_WIDTH>, GameConfig::BOARD_HEIGHT> matrixBlocks_ = {};
-    Tetromino getCurrentTetromino() const;
-    bool isCollide(const Tetromino& tetromino);
-    void fillBoardMatrixTetrominos();
-    void blocksInLine();
-    bool tryWallKick(Tetromino& tetromino);
-    void createCurrentTetromino();
+
+    void fall();
+    bool isCollide(const Tetromino& tetromino) const;
+    bool tryWallKick(Tetromino& tetromino) const;
+    void createGrid();
 
 public:
     Board();
-    bool fallCurrentTetromino();
-    void action(const sf::Event& event);
-    void draw(sf::RenderWindow& window) const;
+
+    unsigned getClearedLines() const;
+    bool isOverFlow() const;
+    bool isFix() const;
+    void setTetromino(const Tetromino& tetromino);
+
+    void action();
+
+    void requestMoveLeft();
+    void requestMoveRight();
+    void requestRotate();
+    void requestSoftDrop();
+    void requestHardDrop();
+
+    const sf::VertexArray& getGrid() const;
+    const Tetromino& getTetromino() const;
+    const Heap& getHeap() const;
 };
