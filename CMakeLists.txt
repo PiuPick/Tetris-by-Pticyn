@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.1)
+cmake_minimum_required(VERSION 3.20)
 project(Tetris-by-Pticyn)
 set(CMAKE_CXX_STANDARD 20)
 
@@ -17,10 +17,24 @@ add_executable(
         src/Board.cpp
         src/Tetromino.cpp
         src/ScoreManager.cpp
-        include/Heap.h
         src/Heap.cpp
+        src/Info.cpp
+        src/ConsoleMenu.cpp
+        src/TestRunner.cpp
+        include/views/TetrominoView.cpp
+        include/views/HeapView.cpp
+        include/views/BoardView.cpp
+        include/views/NextTetrominoView.cpp
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})
+
 target_link_libraries(
         ${PROJECT_NAME}
         sfml-graphics
 )
+
+file(COPY res DESTINATION ${CMAKE_BINARY_DIR})
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
+endif ()

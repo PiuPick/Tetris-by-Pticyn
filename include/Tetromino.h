@@ -1,15 +1,12 @@
 #pragma once
-#include "DrawableEntity.h"
 #include "ConfigurationConstants.h"
 #include <array>
 #include "SFML/Graphics/Color.hpp"
-#include "SFML/Graphics/RenderWindow.hpp"
 
-class Tetromino : public DrawableEntity
+class Tetromino
 {
 private:
-    int x_;
-    int y_;
+    int x_, y_;
     sf::Color color_;
     std::array<std::array<bool, GameConfig::SIZE_SHAPE>, GameConfig::SIZE_SHAPE> shape_{};
 
@@ -34,6 +31,4 @@ public:
     const std::array<std::array<bool, GameConfig::SIZE_SHAPE>, GameConfig::SIZE_SHAPE>& getShape() const;
 
     void setPosition(int x, int y);
-
-    void draw(sf::RenderWindow& window) const override;
 };

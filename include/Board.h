@@ -1,31 +1,49 @@
 #pragma once
 #include "Tetromino.h"
-#include "DrawableEntity.h"
-#include "ConfigurationConstants.h"
 #include "Heap.h"
 #include "SFML/Graphics/VertexArray.hpp"
 
-class Board : public DrawableEntity
+class Board
 {
 private:
+    struct InputCommand
+    {
+        bool moveLeft = false;
+        bool moveRight = false;
+        bool rotate = false;
+        bool softDrop = false;
+        bool hardDrop = false;
+    };
+
     Tetromino tetromino_;
     Heap heap_;
+
+    bool isFix_;
+    InputCommand command_;
     sf::VertexArray grid_;
 
-    void createGrid();
+    void fall();
     bool isCollide(const Tetromino& tetromino) const;
-    Tetromino& tryWallKick(Tetromino& tetromino) const;
+    bool tryWallKick(Tetromino& tetromino) const;
+    void createGrid();
 
 public:
     Board();
 
-    bool fallTetromino();
-    void action(const sf::Event& event);
-
-    const Tetromino& getTetromino() const;
     unsigned getClearedLines() const;
-    bool isOverFlowHeap() const;
+    bool isOverFlow() const;
+    bool isFix() const;
     void setTetromino(const Tetromino& tetromino);
 
-    void draw(sf::RenderWindow& window) const override;
+    void action();
+
+    void requestMoveLeft();
+    void requestMoveRight();
+    void requestRotate();
+    void requestSoftDrop();
+    void requestHardDrop();
+
+    const sf::VertexArray& getGrid() const;
+    const Tetromino& getTetromino() const;
+    const Heap& getHeap() const;
 };

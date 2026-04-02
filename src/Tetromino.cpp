@@ -1,9 +1,9 @@
 #include "../include/Tetromino.h"
-#include <cctype>
 #include "SFML/Graphics/RectangleShape.hpp"
-using namespace sf;
-using namespace std;
+
 using namespace GameConfig;
+using namespace std;
+using namespace sf;
 
 void Tetromino::chooseType()
 {
@@ -116,27 +116,13 @@ Color Tetromino::getColor() const
     return color_;
 }
 
-const array<array<bool, SIZE_SHAPE>,SIZE_SHAPE>& Tetromino::getShape() const
+const array<array<bool, SIZE_SHAPE>, SIZE_SHAPE>& Tetromino::getShape() const
 {
     return shape_;
 }
 
-void Tetromino::setPosition(int x, int y)
+void Tetromino::setPosition(const int x, const int y)
 {
     x_ = x;
     y_ = y;
-}
-
-void Tetromino::draw(RenderWindow& window) const
-{
-    RectangleShape block(Vector2f(CELL_SIZE, CELL_SIZE));
-    block.setFillColor(color_);
-
-    for (int y = 0; y < SIZE_SHAPE; ++y)
-        for (int x = 0; x < SIZE_SHAPE; ++x)
-            if (shape_[y][x])
-            {
-                block.setPosition(Vector2f((x_ + x) * CELL_SIZE, (y_ + y) * CELL_SIZE));
-                window.draw(block);
-            }
 }

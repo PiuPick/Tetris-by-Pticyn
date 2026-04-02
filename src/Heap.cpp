@@ -1,7 +1,8 @@
 #include "../include/Heap.h"
 
-#include "SFML/Graphics/RectangleShape.hpp"
 using namespace GameConfig;
+using namespace std;
+using namespace sf;
 
 void Heap::clearFullLines()
 {
@@ -12,42 +13,55 @@ void Heap::clearFullLines()
         bool lineFull = true;
 
         for (int x = 0; x < BOARD_BLOCK_WIDTH; ++x)
+        {
             if (!heapBlocks_[y][x].exist_)
             {
                 lineFull = false;
                 break;
             }
+        }
 
         if (lineFull)
         {
-            ++clearedLines_;
-
-            for (int i = 0; i < BOARD_BLOCK_WIDTH; ++i)
-                heapBlocks_[y][i].exist_ = false;
-
             for (int row = y; row > 0; --row)
-                for (int i = 0; i < BOARD_BLOCK_WIDTH; ++i)
-                    heapBlocks_[row][i] = heapBlocks_[row - 1][i];
-            y++;
+                heapBlocks_[row] = heapBlocks_[row - 1];
+
+            for (auto& block : heapBlocks_[0])
+            {
+                block.exist_ = false;
+                block.color_ = Color{};
+            }
+
+            ++clearedLines_;
+            ++y;
         }
     }
 }
 
 bool Heap::isOverFlow() const
 {
-    if (heapBlocks_[0][START_X].exist_)
+    if (heapBlocks_[0][BOARD_BLOCK_WIDTH / 2].exist_)
         return true;
     return false;
 }
 
 bool Heap::isBlockExist(const int x, const int y) const
 {
+    if (x < 0 || x >= BOARD_BLOCK_WIDTH ||
+        y < 0 || y >= BOARD_BLOCK_HEIGHT)
+        return false;
+
     return heapBlocks_[y][x].exist_;
 }
 
 unsigned Heap::getClearedLines() const
 {
     return clearedLines_;
+}
+
+sf::Color Heap::getColorAt(const int x, const int y) const
+{
+    return heapBlocks_[y][x].color_;
 }
 
 void Heap::addTetromino(const Tetromino& tetromino)
@@ -69,17 +83,4 @@ void Heap::addTetromino(const Tetromino& tetromino)
             }
 
     clearFullLines();
-}
-
-void Heap::draw(sf::RenderWindow& window) const
-{
-    for (int y = 0; y < BOARD_BLOCK_HEIGHT; ++y)
-        for (int x = 0; x < BOARD_BLOCK_WIDTH; ++x)
-            if (heapBlocks_[y][x].exist_)
-            {
-                sf::RectangleShape block(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-                block.setFillColor(heapBlocks_[y][x].color_);
-                block.setPosition(sf::Vector2f(x * CELL_SIZE, y * CELL_SIZE));
-                window.draw(block);
-            }
 }

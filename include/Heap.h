@@ -1,12 +1,10 @@
 #pragma once
-#include <array>
-
-#include "ConfigurationConstants.h"
-#include "DrawableEntity.h"
 #include "Tetromino.h"
+#include "ConfigurationConstants.h"
+#include <array>
 #include "SFML/Graphics/Color.hpp"
 
-class Heap : public DrawableEntity
+class Heap
 {
 private:
     struct Block
@@ -27,6 +25,5 @@ public:
     bool isBlockExist(int x, int y) const;
 
     unsigned getClearedLines() const;
-
-    void draw(sf::RenderWindow& window) const override;
+    sf::Color getColorAt(int x, int y) const;
 };

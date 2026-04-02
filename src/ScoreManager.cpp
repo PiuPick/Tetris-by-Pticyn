@@ -1,9 +1,11 @@
 #include "../include/ScoreManager.h"
 #include <fstream>
+
 using namespace std;
 
-ScoreManager::ScoreManager(const string& filename) : filename_(filename)
+ScoreManager::ScoreManager() : filename_("scores.txt")
 {
+    initScoreAndLevel();
     loadFromFile();
 }
 
@@ -20,8 +22,13 @@ void ScoreManager::loadFromFile()
     string name;
     int score;
 
-    while (file >> name >> score)
+    while (file >> name)
+    {
+        if (!(file >> score))
+            break;
+
         scores_[name] = score;
+    }
 }
 
 void ScoreManager::saveToFile() const
@@ -31,24 +38,58 @@ void ScoreManager::saveToFile() const
         file << name << " " << score << "\n";
 }
 
-void ScoreManager::updateScore(const string& name, int score)
+void ScoreManager::initScoreAndLevel()
 {
-    if (!scores_.contains(name) || scores_[name] < score)
+    score_ = 0;
+    level_ = 1;
+}
+
+void ScoreManager::updateScore()
+{
+    if (!scores_.contains(name_) || scores_[name_] < score_)
     {
-        scores_[name] = score;
+        scores_[name_] = score_;
         saveToFile();
     }
 }
 
-pair<string, int> ScoreManager::getBestScore() const
+void ScoreManager::calculateScore(const unsigned countLines)
+{
+    score_ += SCORES[countLines];
+    level_ = score_ / 1000 + 1;
+}
+
+pair<string, unsigned> ScoreManager::getBestScore() const
 {
     if (scores_.empty())
-        return {"---", 0};
+        return {"", 0};
 
-    auto best = scores_.begin();
-    for (auto it = scores_.begin(); it != scores_.end(); ++it)
-        if (it->second > best->second)
-            best = it;
+    string name;
+    unsigned score = 0;
 
-    return *best;
+    for (const auto line : scores_)
+    {
+        if (score < line.second)
+        {
+            name = line.first;
+            score = line.second;
+        }
+    }
+
+    return {name, score};
+}
+
+unsigned ScoreManager::getScore() const
+{
+    return score_;
+}
+
+unsigned ScoreManager::getLevel() const
+{
+    return level_;
+}
+
+void ScoreManager::setName(const std::string& name)
+{
+    name_ = name;
 }

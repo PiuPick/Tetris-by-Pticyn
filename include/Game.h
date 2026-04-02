@@ -1,37 +1,42 @@
 #pragma once
 #include "Board.h"
-#include "ScoreManager.h"
-#include "SFML/Graphics/Font.hpp"
-#include "SFML/Graphics/Text.hpp"
-
-enum class GameState
-{
-    EnterName,
-    Playing,
-    Paused,
-    GameOver
-};
+#include "Info.h"
+#include "Tetromino.h"
+#include "IDrawable.h"
+#include "views/BoardView.h"
+#include "views/TetrominoView.h"
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <vector>
+#include <string>
 
 class Game
 {
 private:
+    enum GameState { Playing, Paused, GameOver };
+
     Board board_;
+    Info info_;
+    Tetromino nextTetromino_;
+
+    BoardView boardView_;
+    TetrominoView nextTetrominoView_;
+
+    std::vector<IDrawable*> drawables_;
+
     sf::Clock clock_;
     GameState state_;
-    int score_, level_;
-    float fallSpeed_;
     sf::RenderWindow window_;
-    sf::Font font_;
-    sf::Text scoreText_, levelText_, nextText_, stateText_, namePromptText_, nameValueText_, bestScoreText_;
-    Tetromino nextTetromino_;
-    std::string playerName_;
-    ScoreManager scoreManager_;
-    void processEvents();
-    void update();
-    void render();
+
+    void handle();
+    void action();
+    void draw();
+    void pause();
+    void resume();
+    void gameOver();
+    void restart();
     void createNextTetromino();
 
 public:
-    Game();
+    explicit Game(const std::string& playerName);
     void run();
 };

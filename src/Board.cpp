@@ -1,83 +1,35 @@
 #include "../include/Board.h"
-#include "SFML/Graphics/RectangleShape.hpp"
-using namespace sf;
-using namespace std;
-using namespace GameConfig;
 
-Board::Board()
+using namespace GameConfig;
+using namespace std;
+using namespace sf;
+
+Board::Board() : isFix_(false)
 {
     tetromino_ = Tetromino();
     tetromino_.setPosition(START_X, START_Y);
-
     createGrid();
 }
 
-void Board::draw(RenderWindow& window) const
+bool Board::isCollide(const Tetromino& tetromino) const
 {
-    tetromino_.draw(window);
-    heap_.draw(window);
-    window.draw(grid_);
+    const array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> shape = tetromino.getShape();
+    for (int y = 0; y < SIZE_SHAPE; ++y)
+        for (int x = 0; x < SIZE_SHAPE; ++x)
+            if (shape[y][x])
+            {
+                const int yFull = y + tetromino.getY();
+                const int xFull = x + tetromino.getX();
+
+                if (yFull >= BOARD_BLOCK_HEIGHT ||
+                    xFull < 0 || xFull >= BOARD_BLOCK_WIDTH ||
+                    heap_.isBlockExist(xFull, yFull))
+                    return true;
+            }
+    return false;
 }
 
-const Tetromino& Board::getTetromino() const
-{
-    return tetromino_;
-}
-
-unsigned Board::getClearedLines() const
-{
-    return heap_.getClearedLines();
-}
-
-bool Board::isOverFlowHeap() const
-{
-    return heap_.isOverFlow();
-}
-
-bool Board::fallTetromino()
-{
-    Tetromino testTetromino = getTetromino();
-    testTetromino.moveDown();
-
-    if (isCollide(testTetromino))
-    {
-        heap_.addTetromino(tetromino_);
-        return false;
-    }
-
-    tetromino_.moveDown();
-    return true;
-}
-
-void Board::action(const Event& event)
-{
-    if (event.is<Event::KeyPressed>())
-    {
-        Tetromino testTetromino = getTetromino();
-
-        if (Keyboard::isKeyPressed(Keyboard::Key::Left))
-        {
-            testTetromino.moveLeft();
-            if (!isCollide(testTetromino))
-                tetromino_.moveLeft();
-        }
-        else if (Keyboard::isKeyPressed(Keyboard::Key::Right))
-        {
-            testTetromino.moveRight();
-            if (!isCollide(testTetromino))
-                tetromino_.moveRight();
-        }
-        else if (Keyboard::isKeyPressed(Keyboard::Key::Down)) fallTetromino();
-        else if (Keyboard::isKeyPressed(Keyboard::Key::Space)) while (fallTetromino()) {}
-        else if (Keyboard::isKeyPressed(Keyboard::Key::Up))
-        {
-            testTetromino.rotate();
-            tetromino_ = tryWallKick(testTetromino);
-        }
-    }
-}
-
-Tetromino& Board::tryWallKick(Tetromino& tetromino) const
+bool Board::tryWallKick(Tetromino& tetromino) const
 {
     const int x = tetromino.getX();
     const int y = tetromino.getY();
@@ -88,16 +40,87 @@ Tetromino& Board::tryWallKick(Tetromino& tetromino) const
     {
         tetromino.setPosition(x + dx, y);
         if (!isCollide(tetromino))
-            return tetromino;
+            return true;
     }
 
     tetromino.setPosition(x, y);
-    return tetromino;
+    return false;
 }
+
+unsigned Board::getClearedLines() const { return heap_.getClearedLines(); }
+bool Board::isOverFlow() const { return heap_.isOverFlow(); }
+bool Board::isFix() const { return isFix_; }
 
 void Board::setTetromino(const Tetromino& tetromino)
 {
+    isFix_ = false;
     tetromino_ = tetromino;
+    tetromino_.setPosition(START_X, START_Y);
+}
+
+void Board::action()
+{
+    Tetromino test = tetromino_;
+
+    if (command_.softDrop)
+        fall();
+    else if (command_.moveRight)
+    {
+        test.moveRight();
+        if (!isCollide(test))
+            tetromino_.moveRight();
+    }
+    else if (command_.rotate)
+    {
+        test.rotate();
+        if (tryWallKick(test))
+            tetromino_ = test;
+    }
+    else if (command_.moveLeft)
+    {
+        test.moveLeft();
+        if (!isCollide(test))
+            tetromino_.moveLeft();
+    }
+    else if (command_.hardDrop)
+        while (!isFix_)
+            fall();
+
+    command_ = {};
+}
+
+void Board::fall()
+{
+    Tetromino test = tetromino_;
+
+    test.moveDown();
+    if (isCollide(test))
+    {
+        heap_.addTetromino(tetromino_);
+        isFix_ = true;
+    }
+    else tetromino_.moveDown();
+}
+
+void Board::requestMoveLeft() { command_.moveLeft = true; }
+void Board::requestMoveRight() { command_.moveRight = true; }
+void Board::requestRotate() { command_.rotate = true; }
+void Board::requestSoftDrop() { command_.softDrop = true; }
+void Board::requestHardDrop() { command_.hardDrop = true; }
+
+const VertexArray& Board::getGrid() const
+{
+    return grid_;
+}
+
+const Tetromino& Board::getTetromino() const
+{
+    return tetromino_;
+}
+
+const Heap& Board::getHeap() const
+{
+    return heap_;
 }
 
 void Board::createGrid()
@@ -114,22 +137,4 @@ void Board::createGrid()
         grid.append(Vertex(Vector2f(BOARD_BLOCK_WIDTH * CELL_SIZE, y * CELL_SIZE), Color::White));
     }
     grid_ = grid;
-}
-
-bool Board::isCollide(const Tetromino& tetromino) const
-{
-    const array<array<bool, SIZE_SHAPE>, SIZE_SHAPE> shape = tetromino.getShape();
-    for (int y = 0; y < SIZE_SHAPE; ++y)
-        for (int x = 0; x < SIZE_SHAPE; ++x)
-            if (shape[y][x])
-            {
-                const int yFull = y + tetromino.getY();
-                const int xFull = x + tetromino.getX();
-
-                if (yFull == BOARD_BLOCK_HEIGHT ||
-                    xFull < 0 || xFull >= BOARD_BLOCK_WIDTH ||
-                    (yFull >= 0 && heap_.isBlockExist(xFull, yFull)))
-                    return true;
-            }
-    return false;
 }
