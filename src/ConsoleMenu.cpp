@@ -91,7 +91,7 @@ string ConsoleMenu::askPlayerName()
     cout << "\n";
     while (true)
     {
-        cout << "  Введите имя (1-10 символов, буквы и цифры): ";
+        cout << "  Введите имя на английском (1-10 символов, буквы и цифры): ";
         string name;
 
         if (!getline(cin, name))
@@ -125,7 +125,7 @@ string ConsoleMenu::askPlayerName()
 
         if (!valid)
         {
-            cout << "  [!] Допускаются только буквы и цифры (без пробелов).\n";
+            cout << "  [!] Допускаются только цифры и английские буквы (без пробелов).\n";
             continue;
         }
 
